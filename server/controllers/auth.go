@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/abhinavkale-dev/golang-auth/models"
 	"github.com/abhinavkale-dev/golang-auth/utils"
@@ -17,6 +18,16 @@ func SignUp(c *gin.Context) {
 		return
 	}
 
+	if req.Email == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Email is required"})
+		return
+	}
+
+	if req.Password == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Password is required"})
+		return
+	}
+
 	hashedPassword, err := utils.HashPassword(req.Password)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error hashing password"})
@@ -26,7 +37,11 @@ func SignUp(c *gin.Context) {
 	req.Password = hashedPassword
 
 	if err := models.CreateUser(&req); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error creating user"})
+		if strings.Contains(err.Error(), "email already exists") {
+			c.JSON(http.StatusConflict, gin.H{"error": "Email already in use"})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error creating user: " + err.Error()})
 		return
 	}
 

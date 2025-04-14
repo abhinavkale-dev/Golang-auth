@@ -25,6 +25,7 @@ func main() {
 
 	r.POST("/signup", controllers.SignUp)
 	r.POST("/signin", controllers.SignIn)
+	r.POST("/signout", controllers.SignOut)
 
 	if err := r.Run(":8080"); err != nil {
 		log.Fatalf("failed to run server: %v", err)
