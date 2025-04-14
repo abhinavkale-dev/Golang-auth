@@ -53,9 +53,9 @@ This project provides a full-stack authentication system with:
    ```
 
 3. Set up your PostgreSQL database and update the connection string in `.env`
-  ```
-  DATABASE_URL=your_database_url
-  ```
+   ```
+   DATABASE_URL=your_database_url
+   ```
 
 4. Generate Prisma client:
    ```
